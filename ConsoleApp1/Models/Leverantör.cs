@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp1.Models
 {
-    class Kategorier
+    class Leverantör
     {
-        public int KategoriID { get; set; }
-        public string Kategori { get; set; }
+        public int leverantörID { get; set; }
+        public string leverantör { get; set; }
     }
 }

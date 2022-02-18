@@ -5,36 +5,87 @@ namespace ConsoleApp1
 {
     class Program
     {
+        //queries
+        //kommentera
+
+        /*
+         * Grupp: Frans Nilsson Lidström, Josefine Sjögren
+         * 
+         * Github: https://github.com/fransnl/webbshop
+         * 
+         * I Dapperdatabase.cs finns vår connection till vår sql databas samt alla sql queries som används genom dapper.
+         * I WebbshoppDBcontext.cs har vi vår dbcontext till entity framework
+         * 
+         */
+
         static void Main(string[] args)
         {
             int choice;
+            int productChoice;
+            
+            int namnID;
+            int smakID;
+            int storlekID = 0;
+            int kundID = 0;
+
+            bool hasBought;
+
+            List<List<int>> varukorg = new List<List<int>>();
+            List<Models.Kategorier> kategorier = new List<Models.Kategorier>();
+            kategorier = DapperDatabase.Kategorier();
 
             do
             {
                 choice = Menu.Run();
 
-                if (choice < 5)
+                if (choice < kategorier.Count)
                 {
-                    List<Models.Produkt> productList;
-                
                     Console.Clear();
 
-                    productList = DapperDatabase.MenuChoice(choice);
+                    (productChoice, namnID) = ProductMenu.Run(choice);
 
-                    int row = 5;
+                    Console.Clear();
 
-                    foreach (var item in productList)
+                    if (namnID != 0)
                     {
-                        Console.SetCursorPosition(20, row);
-                        Console.WriteLine(item.Namn);
-                        row++;
+                        smakID = SmakMenu.Run(choice, productChoice, namnID);
+
+                        if (smakID != 0)
+                        {
+                            storlekID = StorlekMenu.Run(choice, productChoice, namnID);
+
+
+                            if (storlekID != 0)
+                            {
+                                List<int> produkt = new List<int>();
+
+                                produkt.Add(namnID);
+                                produkt.Add(smakID);
+                                produkt.Add(storlekID);
+                                produkt.Add(kundID);
+                                
+                                varukorg.Add(produkt);
+                            }
+
+                        }
                     }
 
-                    Console.ReadKey();
                 }
-                
+                if (choice == kategorier.Count)
+                {
+                    hasBought = Varukorg.VarukorgMenu(varukorg);
+                    if (hasBought == true)
+                    {
+                        varukorg.Clear();
+                    }
+                }
+                if (choice == kategorier.Count+1)
+                {
+                    Admin.run();
+                }
 
-            } while (choice != 5);
+
+            } while (choice != kategorier.Count+2);
         }
     }
 }

@@ -12,9 +12,9 @@ namespace ConsoleApp1
         private static int option = 0;
         private static List<Models.Kategorier> kategorier = DapperDatabase.Kategorier();
 
-        private static void StartMenu() 
+        public static void StartMenu()
         {
-
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine(@"
                    ,▄▄,,
                 ,ⁿ   '  `  ',
@@ -39,9 +39,28 @@ namespace ConsoleApp1
                                               ╕   \_|  |_/\__,_|___/\__\__,_|_|  \___|");
 
 
+            List<Models.Produkt> produkter = new List<Models.Produkt>();
+            produkter = DapperDatabase.allaProdukter();
+            List<Models.Bästsäljare> bästsäljare = new List<Models.Bästsäljare>();
+            bästsäljare = DapperDatabase.top3PopulärastProdukt();
 
+            List<string> b = new List<string>();
 
-            for (int i = 0; i < kategorier.Count+1; i++)
+            foreach (var item in bästsäljare)
+            {
+                foreach (var items in produkter)
+                {
+                    if (item.NamnID == items.NamnID)
+                    {
+                        b.Add(items.Namn);
+                    }
+                }
+            }
+
+            SetCursorPosition(37, 25);
+            Console.WriteLine($"Bästsäljare: {b[0]} | {b[1]} | {b[2]}");
+
+            for (int i = 0; i < kategorier.Count + 3; i++)
             {
                 SetCursorPosition(50, i + 27);
                 if (i == option)
@@ -60,9 +79,17 @@ namespace ConsoleApp1
                 {
                     menuOption = $"  {kategorier[i].Kategori}".PadRight(18, ' ');
                 }
+                else if (i == kategorier.Count)
+                {
+                    menuOption = "  Varukorg".PadRight(18, ' ');
+                }
+                else if (i == kategorier.Count+1)
+                {
+                    menuOption = "  Admin".PadRight(18, ' ');
+                }
                 else
                 {
-                    menuOption = "  Exit".PadRight(18, ' ');
+                    menuOption = "  Avsluta".PadRight(18, ' ');
                 }
                 Console.WriteLine(menuOption);
             }
@@ -86,7 +113,7 @@ namespace ConsoleApp1
                 {
                     option++;
 
-                    if (option > kategorier.Count)
+                    if (option > kategorier.Count+2)
                     {
                         option = 0;
                     }
@@ -97,7 +124,7 @@ namespace ConsoleApp1
 
                     if (option < 0)
                     {
-                        option = kategorier.Count;
+                        option = kategorier.Count+2;
                     }
                 }
 
